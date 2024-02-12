@@ -1,0 +1,167 @@
+<fieldset>
+  <p class="legend form-block">query</p>
+
+  <div class="form-group">
+    <label for="field_query">query</label>
+    <input
+      class="form-control"
+      type="text"
+      id="field_query"
+      name="query"
+      placeholder="(ec_Service.ec_ServiceRegionId eq [ec_ServiceRegionId]) and has(ec_IsWec)"
+      [(ngModel)]="config.query"
+    />
+    <small>
+      Placeholders can be used to set query parameters based on the dashbaords asset, e.g.
+      <code>[ec_ServiceRegionId]</code>.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="field_pageSize">pageSize</label>
+    <input
+      class="form-control"
+      type="number"
+      id="field_pageSize"
+      name="pageSize"
+      placeholder="500"
+      [(ngModel)]="config.pageSize"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="field_pageLimit">pageLimit</label>
+    <input
+      class="form-control"
+      type="number"
+      id="field_pageLimit"
+      name="pageLimit"
+      placeholder="3"
+      [(ngModel)]="config.pageLimit"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="field_groupBy">groupBy</label>
+    <input
+      class="form-control"
+      type="text"
+      id="field_groupBy"
+      name="groupBy"
+      placeholder="ec_ActiveAlarmsStatus.major"
+      [(ngModel)]="config.groupBy"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="field_kpiFragment">kpiFragment</label>
+    <input
+      class="form-control"
+      type="text"
+      id="field_kpiFragment"
+      name="kpiFragment"
+      placeholder="ec_ActiveAlarmsStatus.major"
+      [(ngModel)]="config.kpiFragment"
+    />
+  </div>
+</fieldset>
+
+<fieldset>
+  <p class="legend form-block">view</p>
+
+  <div class="form-group">
+    <label for="field_display">display</label>
+    <div class="c8y-select-wrapper">
+      <select id="field_display" name="display" class="form-control" [(ngModel)]="config.display">
+        <option *ngFor="let option of displayOptions" [ngValue]="option">{{ option }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group" *ngIf="config.display === 'aggregate'">
+    <label for="field_label">label</label>
+    <input
+      class="form-control"
+      type="text"
+      id="field_label"
+      name="label"
+      placeholder="type"
+      [(ngModel)]="config.label"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="field_sort">sort</label>
+    <div class="c8y-select-wrapper">
+      <select id="field_sort" name="sort" class="form-control" [(ngModel)]="config.sort">
+        <option *ngFor="let option of sortOptions" [ngValue]="option">{{ option }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="field_order">order</label>
+    <div class="c8y-select-wrapper">
+      <select id="field_order" name="order" class="form-control" [(ngModel)]="config.order">
+        <option *ngFor="let option of orderOptions" [ngValue]="option">{{ option }}</option>
+      </select>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <p class="legend form-block">style</p>
+
+  <div class="form-group">
+    <label for="field_color">color</label>
+    <input
+      class="form-control"
+      type="color"
+      id="field_color"
+      name="color"
+      placeholder="#00584d"
+      [(ngModel)]="config.color"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="field_opacity">opacity</label>
+    <input
+      class="form-control"
+      type="number"
+      id="field_opacity"
+      name="opacity"
+      step="0.1"
+      placeholder="0,3 (1 = 100%)"
+      [(ngModel)]="config.opacity"
+    />
+  </div>
+</fieldset>
+
+<fieldset>
+  <p class="legend form-block">misc</p>
+
+  <div class="form-group">
+    <label class="c8y-switch">
+      <input type="checkbox" name="percent" [(ngModel)]="config.percent" />
+      <span></span>
+      percent
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label class="c8y-switch">
+      <input type="checkbox" name="showMeta" [(ngModel)]="config.showMeta" />
+      <span></span>
+      showMeta
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label class="c8y-switch">
+      <input type="checkbox" name="runOnLoad" [(ngModel)]="config.runOnLoad" />
+      <span></span>
+      runOnLoad
+    </label>
+  </div>
+</fieldset>

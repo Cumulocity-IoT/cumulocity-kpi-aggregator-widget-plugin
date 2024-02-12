@@ -1,0 +1,52 @@
+<div class="menu">
+  <span class="text-muted">{{ timestampEnd | c8yDate }}</span>
+
+  <span *ngIf="paging && config.showMeta">
+    {{ results }} Results
+    <span class="text-muted">({{ paging.currentPage }}/{{ paging.totalPages }})</span>
+  </span>
+
+  <button type="button" class="btn btn-clean" (click)="loadData()">
+    <i class="m-r-4 dlt-c8y-icon-refresh"></i>
+    {{ 'Refresh' | translate }}
+  </button>
+</div>
+
+<ng-container *ngIf="!config.runOnLoad && !timestampStart">
+  <div class="d-flex j-c-center p-16">
+    <button type="button" class="btn btn-primary" (click)="loadData()">
+      {{ 'Load data' | translate }}
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="!loading; else loadingData">
+  <ul *ngIf="assetGroups">
+    <li *ngFor="let group of assetGroups">
+      <label class="text-truncate">{{ group.label }}</label>
+      <span>
+        {{ group.value }}
+        <span *ngIf="config.percent" class="percent text-muted">
+          {{ (group.value / total) * 100 | number : '1.1-1' }}%
+        </span>
+      </span>
+      <div
+        [ngStyle]="{
+          width: (group.value / max) * 100 + '%',
+          backgroundColor: config.color,
+          opacity: config.opacity
+        }"
+      ></div>
+    </li>
+  </ul>
+
+  <div *ngIf="config.showMeta && timestampEnd" class="d-flex j-c-center m-t-16 p-b-8">
+    <small class="text-muted">{{ 'Query duration' }}: {{ duration }}</small>
+  </div>
+</ng-container>
+
+<ng-template #loadingData>
+  <div class="loading-data">
+    <c8y-loading></c8y-loading>
+  </div>
+</ng-template>

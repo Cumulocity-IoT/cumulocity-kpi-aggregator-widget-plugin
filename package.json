@@ -1,0 +1,92 @@
+{
+  "name": "cumulocity-kpi-aggregator-widget-plugin",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start": "c8ycli server",
+    "start:cp": "npm start -- --shell cockpit",
+    "build": "rimraf dist && c8ycli build",
+    "postinstall": "ngcc"
+  },
+  "keywords": ["cumulocity", "cumulocity-iot", "kpi"],
+  "author": "SoftwareAG",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoftwareAG/cumulocity-kpi-aggregator-widget-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SoftwareAG/cumulocity-kpi-aggregator-widget-plugin/issues"
+  },
+  "homepage": "https://github.com/SoftwareAG/cumulocity-kpi-aggregator-widget-plugin#readme",
+  "dependencies": {
+    "@angular/animations": "14.0.6",
+    "@angular/cdk": "14.1.2",
+    "@angular/common": "14.0.6",
+    "@angular/compiler": "14.0.6",
+    "@angular/core": "14.0.6",
+    "@angular/forms": "14.0.6",
+    "@angular/platform-browser": "14.0.6",
+    "@angular/platform-browser-dynamic": "14.0.6",
+    "@angular/router": "14.0.6",
+    "@angular/upgrade": "14.0.6",
+    "@c8y/client": "1018.0.162",
+    "@c8y/ngx-components": "1018.0.162",
+    "@c8y/style": "1018.0.162",
+    "@ngx-translate/core": "14.0.0",
+    "ngx-bootstrap": "9.0.0",
+    "rxjs": "~6.6.3",
+    "zone.js": "~0.11.7"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "14.0.6",
+    "@angular/compiler-cli": "14.0.6",
+    "@angular/language-service": "14.0.6",
+    "@angular/localize": "14.0.6",
+    "@angular/service-worker": "14.0.6",
+    "@c8y/cli": "1018.0.162",
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/jest": "^28.1.6",
+    "@types/lodash": "^4.14.186",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^28.1.3",
+    "jest-preset-angular": "^12.2.5",
+    "prettier": "^2.7.1",
+    "rimraf": "^5.0.5",
+    "typescript": "4.7.4"
+  },
+  "c8y": {
+    "application": {
+      "name": "KPI Aggregator Widget Plugin",
+      "description": "",
+      "contextPath": "kpi-aggregator-plugin",
+      "key": "kpi-aggregator-plugin-key",
+      "globalTitle": "KPI Aggregator Widget Plugin",
+      "requieredplattformversion": "10.17",
+      "isPackage": true,
+      "noAppSwitcher": true,
+      "package": "plugin",
+      "exports": [
+        {
+          "name": "KPI Aggregator Widget Plugin",
+          "module": "KPIAggregatorWidgetPlugin",
+          "path": "./kpi-aggregator-widget/kpi-aggregator-widget.module.ts",
+          "description": ""
+        }
+      ],
+      "remotes": {
+        "kpi-widget": [
+          "KpiAggregatorWidgetPluginModule"
+        ]
+      }
+    },
+    "cli": {}
+  },
+  "browserslist": [
+    "last 2 major versions"
+  ]
+}
