@@ -12,8 +12,7 @@
     "module": "es2020",
     "lib": ["dom", "es2015", "es2016"],
     "paths": {
-      "@flexy/*": ["flexy-integration/*"],
-      "@progress/*": ["progress-tracker/*"]
+      "@widget/*": ["widget/*"],
     },
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -31,7 +30,7 @@
     "resolveJsonModule": true,
     "emitDecoratorMetadata": false
   },
-  "include": ["flexy-integration/**/*", "progress-tracker/**/*", "app.module.ts", "index.ts", "ng1.ts"],
+  "include": ["widget/**/*", "app.module.ts", "index.ts", "ng1.ts"],
   "exclude": ["node_modules", "dist", ".eslintrc.json", "tsconfig.json"],
   "angularCompilerOptions": {
     "enableIvy": true,

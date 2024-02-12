@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "start": "c8ycli server",
-    "start:cp": "npm start -- --shell cockpit",
-    "build": "rimraf dist && c8ycli build",
+    "start": "c8ycli server -u https://main.iot-dev.enercon.de",
+    "start:cp": "npm start -- --shell controlcenter",
+    "clean": "rimraf dist",
+    "build": "npm run clean && c8ycli build",
+    "deploy": "c8ycli deploy",
+    "locale-extract": "c8ycli locale-extract",
     "postinstall": "ngcc"
   },
   "keywords": ["cumulocity", "cumulocity-iot", "kpi"],
@@ -66,15 +69,17 @@
       "contextPath": "kpi-aggregator-plugin",
       "key": "kpi-aggregator-plugin-key",
       "globalTitle": "KPI Aggregator Widget Plugin",
-      "requieredplattformversion": "10.17",
+      "tabsHorizontal": true,
       "isPackage": true,
       "noAppSwitcher": true,
       "package": "plugin",
+      "dynamicOptionsUrl": "/apps/public/public-options/options.json",
+      "requieredplattformversion": "10.17",
       "exports": [
         {
           "name": "KPI Aggregator Widget Plugin",
-          "module": "KPIAggregatorWidgetPlugin",
-          "path": "./kpi-aggregator-widget/kpi-aggregator-widget.module.ts",
+          "module": "KpiAggregatorWidgetPluginModule",
+          "path": "./widget/kpi-aggregator-widget.module.ts",
           "description": ""
         }
       ],

@@ -14,13 +14,13 @@ import { KpiAggregatorWidgetComponent } from './components/kpi-aggregator-widget
   entryComponents: [KpiAggregatorWidgetComponent],
   providers: [
     hookComponent({
-      id: 'dynamic-kpi.widget',
-      label: 'Dynamic KPI Widget',
+      id: 'kpi-aggregator.widget',
+      label: 'KPI Aggregator Widget',
       description: '',
       component: KpiAggregatorWidgetComponent,
       configComponent: KpiAggregatorWidgetConfigComponent,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      // previewImage: require('./assets/list-widget.png'),
+      previewImage: require('./assets/preview.png'),
       data: {
         settings: {
           noNewWidgets: false,
