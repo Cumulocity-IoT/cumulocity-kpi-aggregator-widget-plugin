@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { IManagedObject, InventoryService, Paging } from '@c8y/client';
-import { has, sortBy } from 'lodash';
+import { cloneDeep, has, sortBy } from 'lodash';
 import {
   KpiAggregatorWidgetConfig,
   KpiAggregatorWidgetDisplay,
@@ -22,31 +23,21 @@ interface AssetGroup {
 export class KpiAggregatorWidgetComponent implements OnInit {
   @Input() config: KpiAggregatorWidgetConfig;
 
-  asset: IManagedObject;
-
-  assetGroups: AssetGroup[];
-
-  max = 0;
-
   loading = false;
-
+  asset: IManagedObject;
+  assetGroups: AssetGroup[];
+  max = 0;
+  total = 0;
   results = 0;
-
   paging: Paging<IManagedObject>;
 
+  // benchmarking
   timestampEnd: Date;
-
   timestampStart: Date;
-
   duration: string;
 
-  total = 0;
-
-  constructor(
-    // private route: ActivatedRoute,
-    private inventoryService: InventoryService
-  ) {
-    // this.asset = this.deviceService.getDeviceFromContext(this.route.snapshot);
+  constructor(private activatedRoute: ActivatedRoute, private inventoryService: InventoryService) {
+    this.asset = this.getAssetFromContext(this.activatedRoute.snapshot);
   }
 
   ngOnInit(): void {
@@ -117,7 +108,10 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     let total = 0;
 
     assets.forEach((asset) => {
-      key = this.getPathData<string>(asset, this.config.groupBy).toString();
+      key =
+        !!this.config.groupBy && this.config.groupBy !== ''
+          ? this.getPathData<string>(asset, this.config.groupBy).toString()
+          : 'undefined';
       group = groups.find((g) => g.key === key);
 
       if (key) {
@@ -152,6 +146,21 @@ export class KpiAggregatorWidgetComponent implements OnInit {
               groups.push({
                 key,
                 label: value,
+                value: 1,
+                objects: [asset]
+              });
+            }
+            break;
+          case KpiAggregatorWidgetDisplay.list:
+            total += 1;
+
+            if (group) {
+              group.objects.push(asset);
+              group.value = (group.value as number) + 1;
+            } else {
+              groups.push({
+                key,
+                label: '',
                 value: 1,
                 objects: [asset]
               });
@@ -218,5 +227,27 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
   private padNumber(num: number, padding = 2): string {
     return num.toString().padStart(padding, '0');
+  }
+
+  private getAssetFromContext(route: ActivatedRouteSnapshot, numberOfCheckedParents = 0): IManagedObject {
+    let context: { contextData: IManagedObject } = undefined;
+
+    if (route?.data?.contextData) {
+      context = route.data as {
+        contextData: IManagedObject;
+      };
+    } else if (route?.firstChild?.data?.contextData) {
+      context = route.firstChild.data as {
+        contextData: IManagedObject;
+      };
+    }
+
+    if (context?.contextData) {
+      return cloneDeep(context.contextData);
+    }
+
+    return route.parent && numberOfCheckedParents < 3
+      ? this.getAssetFromContext(route.parent, numberOfCheckedParents + 1)
+      : undefined;
   }
 }

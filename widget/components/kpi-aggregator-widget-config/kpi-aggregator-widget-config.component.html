@@ -42,18 +42,6 @@
   </div>
 
   <div class="form-group">
-    <label for="field_groupBy">groupBy</label>
-    <input
-      class="form-control"
-      type="text"
-      id="field_groupBy"
-      name="groupBy"
-      placeholder="ec_ActiveAlarmsStatus.major"
-      [(ngModel)]="config.groupBy"
-    />
-  </div>
-
-  <div class="form-group">
     <label for="field_kpiFragment">kpiFragment</label>
     <input
       class="form-control"
@@ -78,7 +66,20 @@
     </div>
   </div>
 
-  <div class="form-group" *ngIf="config.display === 'aggregate'">
+  <div *ngIf="config.display != 'list'" class="form-group">
+    <label for="field_groupBy">groupBy</label>
+    <input
+      class="form-control"
+      type="text"
+      id="field_groupBy"
+      name="groupBy"
+      placeholder="ec_ActiveAlarmsStatus.major"
+      [disabled]="config.display == 'list'"
+      [(ngModel)]="config.groupBy"
+    />
+  </div>
+
+  <div *ngIf="config.display == 'aggregate'" class="form-group">
     <label for="field_label">label</label>
     <input
       class="form-control"
@@ -86,6 +87,7 @@
       id="field_label"
       name="label"
       placeholder="type"
+      [disabled]="config.display != 'aggregate'"
       [(ngModel)]="config.label"
     />
   </div>
@@ -143,7 +145,7 @@
 
   <div class="form-group">
     <label class="c8y-switch">
-      <input type="checkbox" name="percent" [(ngModel)]="config.percent" />
+      <input type="checkbox" name="percent" [disabled]="config.display == 'list'" [(ngModel)]="config.percent" />
       <span></span>
       percent
     </label>

@@ -12,6 +12,7 @@
   </button>
 </div>
 
+<!-- manual load trigger -->
 <ng-container *ngIf="!config.runOnLoad && !timestampStart">
   <div class="d-flex j-c-center p-16">
     <button type="button" class="btn btn-primary" (click)="loadData()">
@@ -20,31 +21,77 @@
   </div>
 </ng-container>
 
+<!-- views -->
 <ng-container *ngIf="!loading; else loadingData">
-  <ul *ngIf="assetGroups">
-    <li *ngFor="let group of assetGroups">
-      <label class="text-truncate">{{ group.label }}</label>
-      <span>
-        {{ group.value }}
-        <span *ngIf="config.percent" class="percent text-muted">
-          {{ (group.value / total) * 100 | number : '1.1-1' }}%
-        </span>
-      </span>
-      <div
-        [ngStyle]="{
-          width: (group.value / max) * 100 + '%',
-          backgroundColor: config.color,
-          opacity: config.opacity
-        }"
-      ></div>
-    </li>
-  </ul>
+  <ng-container [ngSwitch]="config.display">
+    <ng-container *ngSwitchCase="'list'">
+      <ng-template [ngTemplateOutlet]="assetListTemplateDefault"
+        [ngTemplateOutletContext]="{ assets: assetGroups[0].objects }">
+      </ng-template>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <ng-template [ngTemplateOutlet]="barChartTemplateDefault" [ngTemplateOutletContext]="{ groups: assetGroups }">
+      </ng-template>
+    </ng-container>
+  </ng-container>
 
   <div *ngIf="config.showMeta && timestampEnd" class="d-flex j-c-center m-t-16 p-b-8">
     <small class="text-muted">{{ 'Query duration' }}: {{ duration }}</small>
   </div>
 </ng-container>
 
+<!-- bar chart basic -->
+<ng-template #barChartTemplateDefault let-groups="assetGroups">
+  <ul *ngIf="assetGroups">
+    <li *ngFor="let group of assetGroups">
+      <ng-template [ngTemplateOutlet]="barChartItemTemplateDefault" [ngTemplateOutletContext]="{ group: group }">
+      </ng-template>
+    </li>
+  </ul>
+</ng-template>
+
+<!-- bar chat item -->
+<ng-template #barChartItemTemplateDefault let-group="group">
+  <label class="text-truncate">{{ group.label }}</label>
+  <span>
+    {{ group.value }}
+    <span *ngIf="config.percent" class="percent text-muted">
+      {{ (group.value / total) * 100 | number : '1.1-1' }}%
+    </span>
+  </span>
+  <div [ngStyle]="{
+      width: (group.value / max) * 100 + '%',
+      backgroundColor: config.color,
+      opacity: config.opacity
+    }">
+  </div>
+</ng-template>
+
+<!-- table -->
+<ng-template #assetListTemplateDefault let-assets="assets">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th translate>Asset</th>
+        <th translate>Type</th>
+        <th translate>Model</th>
+        <th translate>Registration Date</th>
+        <th translate>Last Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let asset of assets">
+        <th><a [routerLink]="[ '/device', asset.id ]">{{ asset.name }}</a></th>
+        <td>{{ asset.type }}</td>
+        <td>{{ asset.c8y_Hardware.model }}</td>
+        <td>{{ asset.creationTime | c8yDate }}</td>
+        <td>{{ asset.lastUpdated | c8yDate }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+
+<!-- loading -->
 <ng-template #loadingData>
   <div class="loading-data">
     <c8y-loading></c8y-loading>
