@@ -3,8 +3,8 @@
   "version": "0.1.5",
   "description": "",
   "scripts": {
-    "start": "c8ycli server -u https://main.iot-dev.enercon.de",
-    "start:cp": "npm start -- --shell controlcenter",
+    "start": "c8ycli server -u https://demos.cumulocity.de",
+    "start:cp": "npm start -- --shell cockpit",
     "clean": "rimraf dist",
     "build": "npm run clean && c8ycli build",
     "deploy": "c8ycli deploy",
