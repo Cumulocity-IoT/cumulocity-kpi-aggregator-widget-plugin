@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { IManagedObject, InventoryService, Paging } from '@c8y/client';
+import { IManagedObject, InventoryService, IResultList, Paging } from '@c8y/client';
 import { cloneDeep, has, sortBy } from 'lodash';
 import {
   KpiAggregatorWidgetConfig,
@@ -50,17 +50,27 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     this.loading = true;
     this.timestampStart = new Date();
     this.assetGroups = this.digestAssets(await this.fetchAssets());
-    this.setMinMax(this.assetGroups);
+    if (this.config.display !== KpiAggregatorWidgetDisplay.list) this.setMinMax(this.assetGroups);
+    console.log(this.assetGroups);
     this.loading = false;
   }
 
   private async fetchAssets(page = 1): Promise<IManagedObject[]> {
-    const response = await this.inventoryService.list({
-      query: this.buildQuery(),
-      pageSize: this.config.pageSize,
-      currentPage: page,
-      withTotalPages: page === 1
-    });
+    let response: IResultList<IManagedObject>;
+
+    try {
+      response = await this.inventoryService.list({
+        query: this.buildQuery(),
+        pageSize: this.config.pageSize,
+        currentPage: page,
+        withTotalPages: page === 1
+      });
+    } catch(error) {
+      console.error('fetchAssets', error);
+      throw(`Could not complete query for page ${page}`);
+    }
+    if (!response || !response.data.length) return [];
+
     const limit =
       typeof this.config.pageLimit !== 'number' || this.config.pageLimit <= 0 ? 10000 : this.config.pageLimit;
     let assets = response.data;
@@ -107,10 +117,15 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     let value: number | string;
     let total = 0;
 
+    if (!assets.length) {
+      console.error('no assets provided');
+      return [];
+    }
+
     assets.forEach((asset) => {
       key =
         !!this.config.groupBy && this.config.groupBy !== ''
-          ? this.getPathData<string>(asset, this.config.groupBy).toString()
+          ? this.getPathData<string>(asset, this.config.groupBy)?.toString()
           : 'undefined';
       group = groups.find((g) => g.key === key);
 

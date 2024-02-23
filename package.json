@@ -1,9 +1,9 @@
 {
   "name": "cumulocity-kpi-aggregator-widget-plugin",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "",
   "scripts": {
-    "start": "c8ycli server -u http://demos.cumulocity.com",
+    "start": "c8ycli server -u https://main.iot-dev.enercon.de",
     "start:cp": "npm start -- --shell controlcenter",
     "clean": "rimraf dist",
     "build": "npm run clean && c8ycli build",

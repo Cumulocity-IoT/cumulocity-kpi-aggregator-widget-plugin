@@ -23,9 +23,10 @@
 
 <!-- views -->
 <ng-container *ngIf="!loading; else loadingData">
-  <ng-container [ngSwitch]="config.display">
-    <ng-container *ngSwitchCase="'list'">
-      <ng-template [ngTemplateOutlet]="assetListTemplateDefault"
+  <ng-container *ngIf="assetGroups?.length; else noData">
+    <ng-container [ngSwitch]="config.display">
+      <ng-container *ngSwitchCase="'list'">
+        <ng-template [ngTemplateOutlet]="assetListTemplateDefault"
         [ngTemplateOutletContext]="{ assets: assetGroups[0].objects }">
       </ng-template>
     </ng-container>
@@ -34,6 +35,7 @@
       </ng-template>
     </ng-container>
   </ng-container>
+</ng-container>
 
   <div *ngIf="config.showMeta && timestampEnd" class="d-flex j-c-center m-t-16 p-b-8">
     <small class="text-muted">{{ 'Query duration' }}: {{ duration }}</small>
@@ -73,6 +75,7 @@
     <thead>
       <tr>
         <th translate>Asset</th>
+        <th translate>System ID</th>
         <th translate>Type</th>
         <th translate>Model</th>
         <th translate>Registration Date</th>
@@ -81,9 +84,17 @@
     </thead>
     <tbody>
       <tr *ngFor="let asset of assets">
-        <th><a [routerLink]="[ '/device', asset.id ]">{{ asset.name }}</a></th>
-        <td>{{ asset.type }}</td>
-        <td>{{ asset.c8y_Hardware.model }}</td>
+        <td>
+          <ng-container *ngIf="asset.c8y_IsDeviceGroup; else deviceLink">
+            <a [routerLink]="[ '/group', asset.id ]">{{ asset.name }}</a>
+          </ng-container>
+          <ng-template #deviceLink>
+            <a [routerLink]="[ '/device', asset.id ]">{{ asset.name }}</a>
+          </ng-template>
+        </td>
+        <td class="text-right">{{ asset.id }}</td>
+        <td>{{ asset.type || '-' }}</td>
+        <td>{{ asset.c8y_Hardware?.model || '-' }}</td>
         <td>{{ asset.creationTime | c8yDate }}</td>
         <td>{{ asset.lastUpdated | c8yDate }}</td>
       </tr>
@@ -96,4 +107,11 @@
   <div class="loading-data">
     <c8y-loading></c8y-loading>
   </div>
+</ng-template>
+
+<!-- empty -->
+<ng-template #noData>
+  <ng-container *ngIf="assetGroups">
+    <pre>{{ assetGroups | json }}</pre>
+  </ng-container>
 </ng-template>

@@ -4,14 +4,14 @@
   <div class="form-group">
     <label for="field_query">query</label>
     <input
-      class="form-control"
+      class="form-control code"
       type="text"
       id="field_query"
       name="query"
       placeholder="(ec_Service.ec_ServiceRegionId eq [ec_ServiceRegionId]) and has(ec_IsWec)"
       [(ngModel)]="config.query"
     />
-    <small>
+    <small class="text-muted">
       Placeholders can be used to set query parameters based on the dashbaords asset, e.g.
       <code>[ec_ServiceRegionId]</code>.
     </small>
@@ -24,6 +24,8 @@
       type="number"
       id="field_pageSize"
       name="pageSize"
+      step="250"
+      min="1"
       placeholder="500"
       [(ngModel)]="config.pageSize"
     />
@@ -36,20 +38,10 @@
       type="number"
       id="field_pageLimit"
       name="pageLimit"
+      step="1"
+      min="1"
       placeholder="3"
       [(ngModel)]="config.pageLimit"
-    />
-  </div>
-
-  <div class="form-group">
-    <label for="field_kpiFragment">kpiFragment</label>
-    <input
-      class="form-control"
-      type="text"
-      id="field_kpiFragment"
-      name="kpiFragment"
-      placeholder="ec_ActiveAlarmsStatus.major"
-      [(ngModel)]="config.kpiFragment"
     />
   </div>
 </fieldset>
@@ -67,9 +59,22 @@
   </div>
 
   <div *ngIf="config.display != 'list'" class="form-group">
+    <label for="field_kpiFragment">kpiFragment</label>
+    <input
+      class="form-control code"
+      type="text"
+      id="field_kpiFragment"
+      name="kpiFragment"
+      placeholder="ec_ActiveAlarmsStatus.major"
+      [disabled]="config.display == 'list'"
+      [(ngModel)]="config.kpiFragment"
+    />
+  </div>
+
+  <div *ngIf="config.display != 'list'" class="form-group">
     <label for="field_groupBy">groupBy</label>
     <input
-      class="form-control"
+      class="form-control code"
       type="text"
       id="field_groupBy"
       name="groupBy"
@@ -82,7 +87,7 @@
   <div *ngIf="config.display == 'aggregate'" class="form-group">
     <label for="field_label">label</label>
     <input
-      class="form-control"
+      class="form-control code"
       type="text"
       id="field_label"
       name="label"
@@ -111,7 +116,7 @@
   </div>
 </fieldset>
 
-<fieldset>
+<fieldset *ngIf="config.display != 'list'">
   <p class="legend form-block">style</p>
 
   <div class="form-group">
@@ -122,28 +127,36 @@
       id="field_color"
       name="color"
       placeholder="#00584d"
+      [disabled]="config.display == 'list'"
       [(ngModel)]="config.color"
     />
   </div>
 
   <div class="form-group">
     <label for="field_opacity">opacity</label>
-    <input
-      class="form-control"
-      type="number"
-      id="field_opacity"
-      name="opacity"
-      step="0.1"
-      placeholder="0,3 (1 = 100%)"
-      [(ngModel)]="config.opacity"
-    />
+
+    <div class="input-group">
+      <input
+        class="form-control"
+        type="number"
+        id="field_opacity"
+        name="opacity"
+        step="10"
+        min="0"
+        max="100"
+        placeholder="30"
+        [disabled]="config.display == 'list'"
+        [(ngModel)]="opacity"
+      />
+      <div class="input-group-addon">%</div>
+    </div>
   </div>
 </fieldset>
 
 <fieldset>
   <p class="legend form-block">misc</p>
 
-  <div class="form-group">
+  <div *ngIf="config.display != 'list'" class="form-group">
     <label class="c8y-switch">
       <input type="checkbox" name="percent" [disabled]="config.display == 'list'" [(ngModel)]="config.percent" />
       <span></span>
