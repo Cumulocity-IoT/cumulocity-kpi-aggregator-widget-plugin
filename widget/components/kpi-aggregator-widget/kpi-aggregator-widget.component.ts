@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IManagedObject, InventoryService, Paging } from '@c8y/client';
-import { has, sortBy } from 'lodash';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { IManagedObject, InventoryService, IResultList, Paging } from '@c8y/client';
+import { cloneDeep, has, sortBy } from 'lodash';
 import {
   KpiAggregatorWidgetConfig,
   KpiAggregatorWidgetDisplay,
@@ -22,31 +23,21 @@ interface AssetGroup {
 export class KpiAggregatorWidgetComponent implements OnInit {
   @Input() config: KpiAggregatorWidgetConfig;
 
-  asset: IManagedObject;
-
-  assetGroups: AssetGroup[];
-
-  max = 0;
-
   loading = false;
-
+  asset: IManagedObject;
+  assetGroups: AssetGroup[];
+  max = 0;
+  total = 0;
   results = 0;
-
   paging: Paging<IManagedObject>;
 
+  // benchmarking
   timestampEnd: Date;
-
   timestampStart: Date;
-
   duration: string;
 
-  total = 0;
-
-  constructor(
-    // private route: ActivatedRoute,
-    private inventoryService: InventoryService
-  ) {
-    // this.asset = this.deviceService.getDeviceFromContext(this.route.snapshot);
+  constructor(private activatedRoute: ActivatedRoute, private inventoryService: InventoryService) {
+    this.asset = this.getAssetFromContext(this.activatedRoute.snapshot);
   }
 
   ngOnInit(): void {
@@ -59,17 +50,27 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     this.loading = true;
     this.timestampStart = new Date();
     this.assetGroups = this.digestAssets(await this.fetchAssets());
-    this.setMinMax(this.assetGroups);
+    if (this.config.display !== KpiAggregatorWidgetDisplay.list) this.setMinMax(this.assetGroups);
+    console.log(this.assetGroups);
     this.loading = false;
   }
 
   private async fetchAssets(page = 1): Promise<IManagedObject[]> {
-    const response = await this.inventoryService.list({
-      query: this.buildQuery(),
-      pageSize: this.config.pageSize,
-      currentPage: page,
-      withTotalPages: page === 1
-    });
+    let response: IResultList<IManagedObject>;
+
+    try {
+      response = await this.inventoryService.list({
+        query: this.buildQuery(),
+        pageSize: this.config.pageSize,
+        currentPage: page,
+        withTotalPages: page === 1
+      });
+    } catch(error) {
+      console.error('fetchAssets', error);
+      throw(`Could not complete query for page ${page}`);
+    }
+    if (!response || !response.data.length) return [];
+
     const limit =
       typeof this.config.pageLimit !== 'number' || this.config.pageLimit <= 0 ? 10000 : this.config.pageLimit;
     let assets = response.data;
@@ -116,8 +117,16 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     let value: number | string;
     let total = 0;
 
+    if (!assets.length) {
+      console.error('no assets provided');
+      return [];
+    }
+
     assets.forEach((asset) => {
-      key = this.getPathData<string>(asset, this.config.groupBy).toString();
+      key =
+        !!this.config.groupBy && this.config.groupBy !== ''
+          ? this.getPathData<string>(asset, this.config.groupBy)?.toString()
+          : 'undefined';
       group = groups.find((g) => g.key === key);
 
       if (key) {
@@ -152,6 +161,21 @@ export class KpiAggregatorWidgetComponent implements OnInit {
               groups.push({
                 key,
                 label: value,
+                value: 1,
+                objects: [asset]
+              });
+            }
+            break;
+          case KpiAggregatorWidgetDisplay.list:
+            total += 1;
+
+            if (group) {
+              group.objects.push(asset);
+              group.value = (group.value as number) + 1;
+            } else {
+              groups.push({
+                key,
+                label: '',
                 value: 1,
                 objects: [asset]
               });
@@ -218,5 +242,27 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
   private padNumber(num: number, padding = 2): string {
     return num.toString().padStart(padding, '0');
+  }
+
+  private getAssetFromContext(route: ActivatedRouteSnapshot, numberOfCheckedParents = 0): IManagedObject {
+    let context: { contextData: IManagedObject } = undefined;
+
+    if (route?.data?.contextData) {
+      context = route.data as {
+        contextData: IManagedObject;
+      };
+    } else if (route?.firstChild?.data?.contextData) {
+      context = route.firstChild.data as {
+        contextData: IManagedObject;
+      };
+    }
+
+    if (context?.contextData) {
+      return cloneDeep(context.contextData);
+    }
+
+    return route.parent && numberOfCheckedParents < 3
+      ? this.getAssetFromContext(route.parent, numberOfCheckedParents + 1)
+      : undefined;
   }
 }

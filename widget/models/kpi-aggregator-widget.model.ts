@@ -20,9 +20,6 @@ export interface KpiAggregatorWidgetConfig {
   query: string;
   pageSize: number;
   pageLimit: number;
-  groupBy: string;
-  label?: string;
-  kpiFragment: string;
   color: string;
   opacity: number;
   showMeta: boolean;
@@ -31,4 +28,7 @@ export interface KpiAggregatorWidgetConfig {
   order: KpiAggregatorWidgetOrder;
   percent: boolean;
   runOnLoad: boolean;
+  groupBy?: string;
+  kpiFragment?: string;
+  label?: string;
 }
