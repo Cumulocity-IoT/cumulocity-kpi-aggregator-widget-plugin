@@ -8,12 +8,12 @@
       type="text"
       id="field_query"
       name="query"
-      placeholder="(ec_Service.ec_ServiceRegionId eq [ec_ServiceRegionId]) and has(ec_IsWec)"
+      placeholder="(kpi_Group.groupId eq [kpi_GroupRefernce]) and has(c8y_IsDevice)"
       [(ngModel)]="config.query"
     />
     <small class="text-muted">
       Placeholders can be used to set query parameters based on the dashbaords asset, e.g.
-      <code>[ec_ServiceRegionId]</code>.
+      <code>[kpi_fragment]</code>.
     </small>
   </div>
 
@@ -65,7 +65,7 @@
       type="text"
       id="field_kpiFragment"
       name="kpiFragment"
-      placeholder="ec_ActiveAlarmsStatus.major"
+      placeholder="c8y_ActiveAlarmsStatus.major"
       [disabled]="config.display == 'list'"
       [(ngModel)]="config.kpiFragment"
     />
@@ -78,7 +78,7 @@
       type="text"
       id="field_groupBy"
       name="groupBy"
-      placeholder="ec_ActiveAlarmsStatus.major"
+      placeholder="c8y_Hardware.model"
       [disabled]="config.display == 'list'"
       [(ngModel)]="config.groupBy"
     />
