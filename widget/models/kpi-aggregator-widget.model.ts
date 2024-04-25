@@ -28,6 +28,7 @@ export interface KpiAggregatorWidgetConfig {
   order: KpiAggregatorWidgetOrder;
   percent: boolean;
   runOnLoad: boolean;
+  parallelRequests: number;
   groupBy?: string;
   kpiFragment?: string;
   label?: string;

@@ -43,7 +43,8 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
     sort: KpiAggregatorWidgetSort.value,
     order: KpiAggregatorWidgetOrder.desc,
     percent: false,
-    runOnLoad: false
+    runOnLoad: false,
+    parallelRequests: 1
   };
 
   constructor(private optionsService: OptionsService) {}

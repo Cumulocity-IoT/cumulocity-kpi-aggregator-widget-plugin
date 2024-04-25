@@ -3,14 +3,8 @@
 
   <div class="form-group">
     <label for="field_query">query</label>
-    <input
-      class="form-control code"
-      type="text"
-      id="field_query"
-      name="query"
-      placeholder="(kpi_Group.groupId eq [kpi_GroupRefernce]) and has(c8y_IsDevice)"
-      [(ngModel)]="config.query"
-    />
+    <input class="form-control code" type="text" id="field_query" name="query"
+      placeholder="(kpi_Group.groupId eq [kpi_GroupRefernce]) and has(c8y_IsDevice)" [(ngModel)]="config.query" />
     <small class="text-muted">
       Placeholders can be used to set query parameters based on the dashbaords asset, e.g.
       <code>[kpi_fragment]</code>.
@@ -19,30 +13,21 @@
 
   <div class="form-group">
     <label for="field_pageSize">pageSize</label>
-    <input
-      class="form-control"
-      type="number"
-      id="field_pageSize"
-      name="pageSize"
-      step="250"
-      min="1"
-      placeholder="500"
-      [(ngModel)]="config.pageSize"
-    />
+    <input class="form-control" type="number" id="field_pageSize" name="pageSize" step="250" min="1" placeholder="500"
+      [(ngModel)]="config.pageSize" />
   </div>
 
   <div class="form-group">
     <label for="field_pageLimit">pageLimit</label>
-    <input
-      class="form-control"
-      type="number"
-      id="field_pageLimit"
-      name="pageLimit"
-      step="1"
-      min="1"
-      placeholder="3"
-      [(ngModel)]="config.pageLimit"
-    />
+    <input class="form-control" type="number" id="field_pageLimit" name="pageLimit" step="1" min="1" placeholder="3"
+      [(ngModel)]="config.pageLimit" />
+
+
+  </div>
+  <div class="form-group">
+    <label for="field_parallelRequests">parallelRequests</label>
+    <input class="form-control" type="number" id="field_parallelRequests" name="parallelRequests" step="1" min="1"
+      max="10" placeholder="1" [(ngModel)]="config.parallelRequests" />
   </div>
 </fieldset>
 
@@ -60,41 +45,21 @@
 
   <div *ngIf="config.display != 'list'" class="form-group">
     <label for="field_kpiFragment">kpiFragment</label>
-    <input
-      class="form-control code"
-      type="text"
-      id="field_kpiFragment"
-      name="kpiFragment"
-      placeholder="c8y_ActiveAlarmsStatus.major"
-      [disabled]="config.display == 'list'"
-      [(ngModel)]="config.kpiFragment"
-    />
+    <input class="form-control code" type="text" id="field_kpiFragment" name="kpiFragment"
+      placeholder="c8y_ActiveAlarmsStatus.major" [disabled]="config.display == 'list'"
+      [(ngModel)]="config.kpiFragment" />
   </div>
 
   <div *ngIf="config.display != 'list'" class="form-group">
     <label for="field_groupBy">groupBy</label>
-    <input
-      class="form-control code"
-      type="text"
-      id="field_groupBy"
-      name="groupBy"
-      placeholder="c8y_Hardware.model"
-      [disabled]="config.display == 'list'"
-      [(ngModel)]="config.groupBy"
-    />
+    <input class="form-control code" type="text" id="field_groupBy" name="groupBy" placeholder="c8y_Hardware.model"
+      [disabled]="config.display == 'list'" [(ngModel)]="config.groupBy" />
   </div>
 
   <div *ngIf="config.display == 'aggregate'" class="form-group">
     <label for="field_label">label</label>
-    <input
-      class="form-control code"
-      type="text"
-      id="field_label"
-      name="label"
-      placeholder="type"
-      [disabled]="config.display != 'aggregate'"
-      [(ngModel)]="config.label"
-    />
+    <input class="form-control code" type="text" id="field_label" name="label" placeholder="type"
+      [disabled]="config.display != 'aggregate'" [(ngModel)]="config.label" />
   </div>
 
   <div class="form-group">
@@ -121,33 +86,16 @@
 
   <div class="form-group">
     <label for="field_color">color</label>
-    <input
-      class="form-control"
-      type="color"
-      id="field_color"
-      name="color"
-      placeholder="#00584d"
-      [disabled]="config.display == 'list'"
-      [(ngModel)]="config.color"
-    />
+    <input class="form-control" type="color" id="field_color" name="color" placeholder="#00584d"
+      [disabled]="config.display == 'list'" [(ngModel)]="config.color" />
   </div>
 
   <div class="form-group">
     <label for="field_opacity">opacity</label>
 
     <div class="input-group">
-      <input
-        class="form-control"
-        type="number"
-        id="field_opacity"
-        name="opacity"
-        step="10"
-        min="0"
-        max="100"
-        placeholder="30"
-        [disabled]="config.display == 'list'"
-        [(ngModel)]="opacity"
-      />
+      <input class="form-control" type="number" id="field_opacity" name="opacity" step="10" min="0" max="100"
+        placeholder="30" [disabled]="config.display == 'list'" [(ngModel)]="opacity" />
       <div class="input-group-addon">%</div>
     </div>
   </div>
