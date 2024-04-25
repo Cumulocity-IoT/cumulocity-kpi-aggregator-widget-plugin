@@ -3,15 +3,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule, hookComponent } from '@c8y/ngx-components';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { KpiAggregatorWidgetConfigComponent } from './components/kpi-aggregator-widget-config/kpi-aggregator-widget-config.component';
 import { KpiAggregatorWidgetComponent } from './components/kpi-aggregator-widget/kpi-aggregator-widget.component';
 
 @NgModule({
-  imports: [CommonModule, CoreModule, RouterModule, FormsModule],
-  declarations: [
-    KpiAggregatorWidgetComponent,
-    KpiAggregatorWidgetConfigComponent,
-  ],
+  imports: [CommonModule, CoreModule, RouterModule, FormsModule, TooltipModule],
+  declarations: [KpiAggregatorWidgetComponent, KpiAggregatorWidgetConfigComponent],
   entryComponents: [KpiAggregatorWidgetComponent],
   providers: [
     hookComponent({
@@ -28,12 +26,12 @@ import { KpiAggregatorWidgetComponent } from './components/kpi-aggregator-widget
           ng1: {
             options: {
               noDeviceTarget: true,
-              groupsSelectable: true,
-            },
-          },
-        },
-      },
-    }),
-  ],
+              groupsSelectable: true
+            }
+          }
+        }
+      }
+    })
+  ]
 })
 export class KpiAggregatorWidgetPluginModule {}

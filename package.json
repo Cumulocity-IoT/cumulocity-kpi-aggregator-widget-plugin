@@ -1,6 +1,6 @@
 {
   "name": "cumulocity-kpi-aggregator-widget-plugin",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "",
   "scripts": {
     "start": "c8ycli server -u https://demos.cumulocity.de",

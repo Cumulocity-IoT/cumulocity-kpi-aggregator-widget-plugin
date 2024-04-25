@@ -3,7 +3,20 @@
 
   <span *ngIf="paging && config.showMeta">
     {{ results }} Results
-    <span class="text-muted">({{ paging.currentPage }}/{{ paging.totalPages }})</span>
+    <ng-container *ngIf="paging.totalPages <= config.pageLimit; else lessThanTotalPages">
+      <span class="text-muted"
+        [tooltip]="'Current Page: ' + paging.currentPage + '\nTotal Pages: ' + paging.totalPages"
+        [placement]="'bottom'">
+        ({{ paging.currentPage }}/{{ paging.totalPages }})
+      </span>
+    </ng-container>
+    <ng-template #lessThanTotalPages>
+      <span class="text-muted"
+        [tooltip]="'Current Page: ' + paging.currentPage + '\nPage Limit: ' + config.pageLimit + '\nTotal Pages: ' + paging.totalPages"
+        [placement]="'bottom'">
+        ({{ paging.currentPage }}/{{ config.pageLimit }}|{{paging.totalPages}})
+      </span>
+    </ng-template>
   </span>
 
   <button type="button" class="btn btn-clean" (click)="loadData()">
@@ -27,15 +40,15 @@
     <ng-container [ngSwitch]="config.display">
       <ng-container *ngSwitchCase="'list'">
         <ng-template [ngTemplateOutlet]="assetListTemplateDefault"
-        [ngTemplateOutletContext]="{ assets: assetGroups[0].objects }">
-      </ng-template>
-    </ng-container>
-    <ng-container *ngSwitchDefault>
-      <ng-template [ngTemplateOutlet]="barChartTemplateDefault" [ngTemplateOutletContext]="{ groups: assetGroups }">
-      </ng-template>
+          [ngTemplateOutletContext]="{ assets: assetGroups[0].objects }">
+        </ng-template>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <ng-template [ngTemplateOutlet]="barChartTemplateDefault" [ngTemplateOutletContext]="{ groups: assetGroups }">
+        </ng-template>
+      </ng-container>
     </ng-container>
   </ng-container>
-</ng-container>
 
   <div *ngIf="config.showMeta && timestampEnd" class="d-flex j-c-center m-t-16 p-b-8">
     <small class="text-muted">{{ 'Query duration' }}: {{ duration }}</small>

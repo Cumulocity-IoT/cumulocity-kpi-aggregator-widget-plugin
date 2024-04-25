@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { IManagedObject, InventoryService, IResultList, Paging } from '@c8y/client';
-import { cloneDeep, has, sortBy } from 'lodash';
+import { cloneDeep, flatMap, has, sortBy } from 'lodash';
 import {
   KpiAggregatorWidgetConfig,
   KpiAggregatorWidgetDisplay,
@@ -41,6 +41,8 @@ export class KpiAggregatorWidgetComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.config.pageLimit = typeof this.config.pageLimit !== 'number' || this.config.pageLimit <= 0 ? 10000 : this.config.pageLimit;
+
     if (this.config.runOnLoad) {
       void this.loadData();
     }
@@ -49,13 +51,76 @@ export class KpiAggregatorWidgetComponent implements OnInit {
   async loadData(): Promise<void> {
     this.loading = true;
     this.timestampStart = new Date();
-    this.assetGroups = this.digestAssets(await this.fetchAssets());
+
+    // first page and paging
+    let { limit, assets } = await this.loadPageOne();
+
+    // further pages
+    if (limit > 1)
+      assets =
+        this.config.parallelRequests > 1
+          ? await this.loadDataParallel(limit, assets)
+          : await this.loadDataSequentially(limit, assets);
+
+    this.assetGroups = this.digestAssets(assets);
+
     if (this.config.display !== KpiAggregatorWidgetDisplay.list) this.setMinMax(this.assetGroups);
-    console.log(this.assetGroups);
+
+    this.timestampEnd = new Date();
+    this.duration = this.calcQueryDuration();
     this.loading = false;
+
+    console.groupEnd();
   }
 
-  private async fetchAssets(page = 1): Promise<IManagedObject[]> {
+  private async loadDataSequentially(limit: number, assets: IManagedObject[]): Promise<IManagedObject[]> {
+    if (limit < 2) return assets;
+
+    for (let page = 2; page <= limit; page++) {
+      assets = [...assets, ...(await this.fetchAssets(page)).data];
+      this.paging.currentPage = page;
+      this.results = assets.length;
+    }
+
+    return assets;
+  }
+
+  private async loadDataParallel(limit: number, assets: IManagedObject[]): Promise<IManagedObject[]> {
+    if (limit < 2) return assets;
+
+    let requests: Promise<IManagedObject[]>[] = [];
+
+    for (let page = 2; page <= limit; page++) {
+      requests.push(this.fetchAssets(page).then((r) => r.data));
+
+      if ((page - 1) % this.config.parallelRequests === 0 || page === limit) {
+        const responses = await Promise.all(requests);
+
+        assets = [...assets, ...flatMap(responses)];
+        this.results = assets.length;
+        this.paging.currentPage = page;
+        requests = [];
+      }
+    }
+
+    return assets;
+  }
+
+  private async loadPageOne(): Promise<{ limit: number; assets: IManagedObject[] }> {
+    // first page and paging
+    const response = await this.fetchAssets();
+    const assets = response.data;
+    const limit =
+      this.config.pageLimit < response.paging.totalPages ? this.config.pageLimit : response.paging.totalPages;
+
+    this.paging = response.paging;
+    this.paging.currentPage = 1;
+    this.results = assets.length;
+
+    return { limit, assets };
+  }
+
+  private async fetchAssets(page = 1): Promise<IResultList<IManagedObject>> {
     let response: IResultList<IManagedObject>;
 
     try {
@@ -65,31 +130,13 @@ export class KpiAggregatorWidgetComponent implements OnInit {
         currentPage: page,
         withTotalPages: page === 1
       });
-    } catch(error) {
+    } catch (error) {
       console.error('fetchAssets', error);
-      throw(`Could not complete query for page ${page}`);
+      throw `Could not complete query for page ${page}`;
     }
-    if (!response || !response.data.length) return [];
+    if (!response || !response.data.length) return null;
 
-    const limit =
-      typeof this.config.pageLimit !== 'number' || this.config.pageLimit <= 0 ? 10000 : this.config.pageLimit;
-    let assets = response.data;
-
-    if (response.paging && page === 1) {
-      this.paging = response.paging;
-    }
-    this.paging.currentPage = page;
-    this.timestampEnd = new Date();
-    this.results = page * this.config.pageSize;
-    this.duration = this.calcQueryDuration();
-
-    if (page < this.paging.totalPages && page + 1 < limit) {
-      assets = [...assets, ...(await this.fetchAssets(page + 1))];
-    }
-
-    this.results = assets.length;
-
-    return assets;
+    return response;
   }
 
   private buildQuery(): string {
