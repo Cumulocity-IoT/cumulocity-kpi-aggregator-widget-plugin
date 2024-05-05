@@ -84,21 +84,33 @@
 <fieldset *ngIf="config.display != 'list'">
   <p class="legend form-block">style</p>
 
-  <div class="form-group">
-    <label for="field_color">color</label>
-    <input class="form-control" type="color" id="field_color" name="color" placeholder="#00584d"
-      [disabled]="config.display == 'list'" [(ngModel)]="config.color" />
+  <div class="form-group" *ngIf="config.display === 'pieAggregate' || config.display === 'pieCount'; else noPieChartStyle">
+    <label for="field_legend_position">legendPosition</label>
+    <select class="form-control" id="field_legend_position" name="color" [(ngModel)]="config.chartLegendPosition">
+      <option value="top">⬆️ top</option>
+      <option value="right">➡️ right</option>
+      <option value="bottom">⬇️ bottom</option>
+      <option value="left">⬅️ left</option>
+    </select>
   </div>
 
-  <div class="form-group">
-    <label for="field_opacity">opacity</label>
-
-    <div class="input-group">
-      <input class="form-control" type="number" id="field_opacity" name="opacity" step="10" min="0" max="100"
-        placeholder="30" [disabled]="config.display == 'list'" [(ngModel)]="opacity" />
-      <div class="input-group-addon">%</div>
+  <ng-template #noPieChartStyle>
+    <div class="form-group">
+      <label for="field_color">color</label>
+      <input class="form-control" type="color" id="field_color" name="color" placeholder="#00584d"
+        [disabled]="config.display == 'list'" [(ngModel)]="config.color" />
     </div>
-  </div>
+  
+    <div class="form-group">
+      <label for="field_opacity">opacity</label>
+  
+      <div class="input-group">
+        <input class="form-control" type="number" id="field_opacity" name="opacity" step="10" min="0" max="100"
+          placeholder="30" [disabled]="config.display == 'list'" [(ngModel)]="opacity" />
+        <div class="input-group-addon">%</div>
+      </div>
+    </div>
+  </ng-template>
 </fieldset>
 
 <fieldset>

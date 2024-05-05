@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { IManagedObject, InventoryService, IResultList, Paging } from '@c8y/client';
+import { ChartConfiguration, ChartData } from 'chart.js';
 import { cloneDeep, flatMap, has, sortBy } from 'lodash';
 import {
   KpiAggregatorWidgetConfig,
@@ -23,6 +24,8 @@ interface AssetGroup {
 export class KpiAggregatorWidgetComponent implements OnInit {
   @Input() config: KpiAggregatorWidgetConfig;
 
+  readonly displayMode = KpiAggregatorWidgetDisplay;
+
   loading = false;
   asset: IManagedObject;
   assetGroups: AssetGroup[];
@@ -30,6 +33,17 @@ export class KpiAggregatorWidgetComponent implements OnInit {
   total = 0;
   results = 0;
   paging: Paging<IManagedObject>;
+
+  // pie chart
+  pieChartData?: ChartData<'pie', number[], string | string[]>;
+  pieChartOptions: ChartConfiguration['options'] = {
+    plugins: {
+      legend: {
+        display: true,
+        position: undefined
+      }
+    }
+  };
 
   // benchmarking
   timestampEnd: Date;
@@ -41,7 +55,9 @@ export class KpiAggregatorWidgetComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.config.pageLimit = typeof this.config.pageLimit !== 'number' || this.config.pageLimit <= 0 ? 10000 : this.config.pageLimit;
+    this.config.pageLimit =
+      typeof this.config.pageLimit !== 'number' || this.config.pageLimit <= 0 ? 10000 : this.config.pageLimit;
+    this.pieChartOptions.plugins.legend.position = this.config.chartLegendPosition || 'top';
 
     if (this.config.runOnLoad) {
       void this.loadData();
@@ -64,13 +80,20 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
     this.assetGroups = this.digestAssets(assets);
 
-    if (this.config.display !== KpiAggregatorWidgetDisplay.list) this.setMinMax(this.assetGroups);
+    switch (this.config.display) {
+      case KpiAggregatorWidgetDisplay.list:
+        break;
+      case KpiAggregatorWidgetDisplay.pieAggregate:
+      case KpiAggregatorWidgetDisplay.pieCount:
+        this.pieChartData = this.convertDataForPieChart(this.assetGroups);
+        break;
+      default:
+        this.setMinMax(this.assetGroups);
+    }
 
     this.timestampEnd = new Date();
     this.duration = this.calcQueryDuration();
     this.loading = false;
-
-    console.groupEnd();
   }
 
   private async loadDataSequentially(limit: number, assets: IManagedObject[]): Promise<IManagedObject[]> {
@@ -178,6 +201,7 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
       if (key) {
         switch (this.config.display) {
+          case KpiAggregatorWidgetDisplay.pieAggregate:
           case KpiAggregatorWidgetDisplay.aggregate:
             value = this.getPathData<number>(asset, this.config.kpiFragment);
             total += value;
@@ -197,6 +221,7 @@ export class KpiAggregatorWidgetComponent implements OnInit {
               }
             }
             break;
+          case KpiAggregatorWidgetDisplay.pieCount:
           case KpiAggregatorWidgetDisplay.count:
             value = this.getPathData<string>(asset, this.config.kpiFragment);
             total += 1;
@@ -311,5 +336,24 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     return route.parent && numberOfCheckedParents < 3
       ? this.getAssetFromContext(route.parent, numberOfCheckedParents + 1)
       : undefined;
+  }
+
+  private convertDataForPieChart(assetGroups: AssetGroup[]): ChartData<'pie', number[], string | string[]> {
+    const labels: string | string[] = [];
+    let data: number[] = [];
+
+    assetGroups.forEach((ag) => {
+      labels.push(ag.key);
+      data.push(typeof ag.value === 'number' ? ag.value : parseInt(ag.value));
+    });
+
+    return {
+      labels,
+      datasets: [
+        {
+          data
+        }
+      ]
+    };
   }
 }

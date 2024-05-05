@@ -3,12 +3,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule, hookComponent } from '@c8y/ngx-components';
+import { NgChartsModule } from 'ng2-charts';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { KpiAggregatorWidgetConfigComponent } from './components/kpi-aggregator-widget-config/kpi-aggregator-widget-config.component';
 import { KpiAggregatorWidgetComponent } from './components/kpi-aggregator-widget/kpi-aggregator-widget.component';
 
 @NgModule({
-  imports: [CommonModule, CoreModule, RouterModule, FormsModule, TooltipModule],
+  imports: [CommonModule, CoreModule, RouterModule, FormsModule, TooltipModule, NgChartsModule],
   declarations: [KpiAggregatorWidgetComponent, KpiAggregatorWidgetConfigComponent],
   entryComponents: [KpiAggregatorWidgetComponent],
   providers: [

@@ -44,7 +44,8 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
     order: KpiAggregatorWidgetOrder.desc,
     percent: false,
     runOnLoad: false,
-    parallelRequests: 1
+    parallelRequests: 1,
+    chartLegendPosition: 'top'
   };
 
   constructor(private optionsService: OptionsService) {}

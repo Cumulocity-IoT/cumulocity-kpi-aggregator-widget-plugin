@@ -1,17 +1,23 @@
 {
   "name": "cumulocity-kpi-aggregator-widget-plugin",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "",
   "scripts": {
-    "start": "c8ycli server -u https://demos.cumulocity.de",
+    "start": "c8ycli server -u https://psfactory.eu-latest.cumulocity.com",
     "start:cp": "npm start -- --shell cockpit",
     "clean": "rimraf dist",
-    "build": "npm run clean && c8ycli build",
+    "prebuild": "npm run clean",
+    "build": "c8ycli build",
+    "postbuild": "cd ./dist/apps/${npm_package_name} && zip -r ../../${npm_package_name}_${npm_package_version}.zip ./",
     "deploy": "c8ycli deploy",
     "locale-extract": "c8ycli locale-extract",
     "postinstall": "ngcc"
   },
-  "keywords": ["cumulocity", "cumulocity-iot", "kpi"],
+  "keywords": [
+    "cumulocity",
+    "cumulocity-iot",
+    "kpi"
+  ],
   "author": "SoftwareAG",
   "license": "MIT",
   "repository": {
@@ -37,6 +43,7 @@
     "@c8y/ngx-components": "1018.0.162",
     "@c8y/style": "1018.0.162",
     "@ngx-translate/core": "14.0.0",
+    "ng2-charts": "^4.1.1",
     "ngx-bootstrap": "9.0.0",
     "rxjs": "~6.6.3",
     "zone.js": "~0.11.7"
@@ -74,7 +81,7 @@
       "noAppSwitcher": true,
       "package": "plugin",
       "dynamicOptionsUrl": "/apps/public/public-options/options.json",
-      "requieredplattformversion": "10.17",
+      "requieredplattformversion": "10.18",
       "exports": [
         {
           "name": "KPI Aggregator Widget Plugin",

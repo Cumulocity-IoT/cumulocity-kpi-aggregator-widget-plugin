@@ -4,8 +4,7 @@
   <span *ngIf="paging && config.showMeta">
     {{ results }} Results
     <ng-container *ngIf="paging.totalPages <= config.pageLimit; else lessThanTotalPages">
-      <span class="text-muted"
-        [tooltip]="'Current Page: ' + paging.currentPage + '\nTotal Pages: ' + paging.totalPages"
+      <span class="text-muted" [tooltip]="'Current Page: ' + paging.currentPage + '\nTotal Pages: ' + paging.totalPages"
         [placement]="'bottom'">
         ({{ paging.currentPage }}/{{ paging.totalPages }})
       </span>
@@ -38,9 +37,17 @@
 <ng-container *ngIf="!loading; else loadingData">
   <ng-container *ngIf="assetGroups?.length; else noData">
     <ng-container [ngSwitch]="config.display">
-      <ng-container *ngSwitchCase="'list'">
+      <ng-container *ngSwitchCase="displayMode.list">
         <ng-template [ngTemplateOutlet]="assetListTemplateDefault"
           [ngTemplateOutletContext]="{ assets: assetGroups[0].objects }">
+        </ng-template>
+      </ng-container>
+      <ng-container *ngSwitchCase="displayMode.pieAggregate">
+        <ng-template [ngTemplateOutlet]="pieCHartTemplateDefault" [ngTemplateOutletContext]="{ assets: assetGroups }">
+        </ng-template>
+      </ng-container>
+      <ng-container *ngSwitchCase="displayMode.pieCount">
+        <ng-template [ngTemplateOutlet]="pieCHartTemplateDefault" [ngTemplateOutletContext]="{ assets: assetGroups }">
         </ng-template>
       </ng-container>
       <ng-container *ngSwitchDefault>
@@ -115,6 +122,14 @@
   </table>
 </ng-template>
 
+<!-- pie chart -->
+<ng-template #pieCHartTemplateDefault let-assets="assets">
+  <div class="chart-wrap">
+    <canvas baseChart [data]="pieChartData" [type]="'pie'" [options]="pieChartOptions">
+    </canvas>
+  </div>
+</ng-template>
+
 <!-- loading -->
 <ng-template #loadingData>
   <div class="loading-data">
@@ -125,6 +140,9 @@
 <!-- empty -->
 <ng-template #noData>
   <ng-container *ngIf="assetGroups">
-    <pre>{{ assetGroups | json }}</pre>
+    <div class="p-16 m-b-16">
+      <h2>Empty AssetGroup Result</h2>
+      <pre>{{ config | json }}</pre>
+    </div>
   </ng-container>
 </ng-template>
