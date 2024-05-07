@@ -80,6 +80,7 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
     this.assetGroups = this.digestAssets(assets);
 
+    // data
     switch (this.config.display) {
       case KpiAggregatorWidgetDisplay.list:
         break;
@@ -283,6 +284,10 @@ export class KpiAggregatorWidgetComponent implements OnInit {
   }
 
   private sortGroups(groups: AssetGroup[]): AssetGroup[] {
+    if (this.config.display === KpiAggregatorWidgetDisplay.list && !this.config.label) {
+      this.config.sort = 'name';
+    }
+
     const sorted = sortBy(groups, this.config.sort);
 
     return this.config.order === KpiAggregatorWidgetOrder.desc ? sorted.reverse() : sorted;

@@ -1,6 +1,6 @@
 {
   "name": "cumulocity-kpi-aggregator-widget-plugin",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "",
   "scripts": {
     "start": "c8ycli server -u https://psfactory.eu-latest.cumulocity.com",
@@ -34,7 +34,7 @@
     "@angular/common": "14.0.6",
     "@angular/compiler": "14.0.6",
     "@angular/core": "14.0.6",
-    "@angular/forms": "14.0.6",
+    "@angular/forms": "^14.0.6",
     "@angular/platform-browser": "14.0.6",
     "@angular/platform-browser-dynamic": "14.0.6",
     "@angular/router": "14.0.6",
@@ -42,6 +42,7 @@
     "@c8y/client": "1018.0.162",
     "@c8y/ngx-components": "1018.0.162",
     "@c8y/style": "1018.0.162",
+    "@ngx-formly/core": "^6.3.0",
     "@ngx-translate/core": "14.0.0",
     "ng2-charts": "^4.1.1",
     "ngx-bootstrap": "9.0.0",

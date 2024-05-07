@@ -84,7 +84,7 @@
   <div [ngStyle]="{
       width: (group.value / max) * 100 + '%',
       backgroundColor: config.color,
-      opacity: config.opacity
+      opacity: (config.opacity / 100)
     }">
   </div>
 </ng-template>

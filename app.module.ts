@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BootstrapComponent, CoreModule, RouterModule } from '@c8y/ngx-components';
 import { CockpitDashboardModule } from '@c8y/ngx-components/context-dashboard';
+import { FormlyModule } from '@ngx-formly/core';
 import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -10,8 +12,11 @@ import { NgChartsModule } from 'ng2-charts';
     RouterModule.forRoot([]),
     CoreModule.forRoot(),
     CockpitDashboardModule,
-    NgChartsModule.forRoot()
+    NgChartsModule.forRoot(),
+    ReactiveFormsModule,
+    FormlyModule.forRoot()
   ],
+  declarations: [],
   bootstrap: [BootstrapComponent]
 })
 export class AppModule {}
