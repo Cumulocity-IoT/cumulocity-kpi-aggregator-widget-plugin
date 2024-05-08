@@ -89,7 +89,6 @@ export class KpiAggregatorWidgetComponent implements OnInit {
   }
 
   async loadNextBatch(): Promise<void> {
-    console.log('loadNextBatch');
     if (this.paging.totalPages <= this.paging.currentPage) return;
 
     const limit = this.getNextBatchLimit();
