@@ -1,9 +1,9 @@
 {
   "name": "cumulocity-kpi-aggregator-widget-plugin",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "",
   "scripts": {
-    "start": "c8ycli server -u https://psfactory.eu-latest.cumulocity.com",
+    "start": "c8ycli server -u https://demos.cumulocity.de",
     "start:cp": "npm start -- --shell cockpit",
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
@@ -74,7 +74,7 @@
     "application": {
       "name": "KPI Aggregator Widget Plugin",
       "description": "",
-      "contextPath": "kpi-aggregator-plugin",
+      "contextPath": "cumulocity-kpi-aggregator-widget-plugin",
       "key": "kpi-aggregator-plugin-key",
       "globalTitle": "KPI Aggregator Widget Plugin",
       "tabsHorizontal": true,
