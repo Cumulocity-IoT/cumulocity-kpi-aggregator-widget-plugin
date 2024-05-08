@@ -3,7 +3,7 @@
 
   <span *ngIf="paging && config.showMeta">
     {{ results }} Results
-    <ng-container *ngIf="paging.totalPages <= config.pageLimit; else lessThanTotalPages">
+    <ng-container *ngIf="paging.totalPages <= pageLimit; else lessThanTotalPages">
       <span class="text-muted" [tooltip]="'Current Page: ' + paging.currentPage + '\nTotal Pages: ' + paging.totalPages"
         [placement]="'bottom'">
         ({{ paging.currentPage }}/{{ paging.totalPages }})
@@ -11,17 +11,34 @@
     </ng-container>
     <ng-template #lessThanTotalPages>
       <span class="text-muted"
-        [tooltip]="'Current Page: ' + paging.currentPage + '\nPage Limit: ' + config.pageLimit + '\nTotal Pages: ' + paging.totalPages"
+        [tooltip]="'Current Page: ' + paging.currentPage + '\nPage Limit: ' + pageLimit + '\nTotal Pages: ' + paging.totalPages"
         [placement]="'bottom'">
-        ({{ paging.currentPage }}/{{ config.pageLimit }}|{{paging.totalPages}})
+        ({{ paging.currentPage }}/{{ pageLimit }}|{{paging.totalPages}})
       </span>
     </ng-template>
   </span>
 
-  <button type="button" class="btn btn-clean" (click)="loadData()">
-    <i class="m-r-4 dlt-c8y-icon-refresh"></i>
-    {{ 'Refresh' | translate }}
-  </button>
+  <div dropdown class="dropdown">
+    <button dropdownToggle type="button" title="dropdown-toggle" class="dropdown-toggle c8y-dropdown">
+      <i [c8yIcon]="'ellipsis-v'"></i>
+    </button>
+
+    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right">
+      <li>
+        <button type="button" [disabled]="!paging || paging?.totalPages <= paging?.currentPage"
+          (click)="loadNextBatch()">
+          <i [c8yIcon]="'chevron-double-right'"></i>
+          {{ 'Load next batch' | translate }}
+        </button>
+      </li>
+      <li>
+        <button type="button" (click)="loadData()">
+          <i [c8yIcon]="'refresh'"></i>
+          {{ 'Refresh' | translate }}
+        </button>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- manual load trigger -->
@@ -64,7 +81,7 @@
 
 <!-- bar chart basic -->
 <ng-template #barChartTemplateDefault let-groups="assetGroups">
-  <ul *ngIf="assetGroups">
+  <ul *ngIf="assetGroups" class="bar-chart">
     <li *ngFor="let group of assetGroups">
       <ng-template [ngTemplateOutlet]="barChartItemTemplateDefault" [ngTemplateOutletContext]="{ group: group }">
       </ng-template>

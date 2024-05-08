@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { CoreModule, hookComponent } from '@c8y/ngx-components';
 import { FormlyModule } from '@ngx-formly/core';
 import { NgChartsModule } from 'ng2-charts';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { KpiAggregatorWidgetConfigComponent } from './components/kpi-aggregator-widget-config/kpi-aggregator-widget-config.component';
 import { KpiAggregatorWidgetComponent } from './components/kpi-aggregator-widget/kpi-aggregator-widget.component';
@@ -17,7 +18,8 @@ import { KpiAggregatorWidgetComponent } from './components/kpi-aggregator-widget
     FormsModule,
     TooltipModule,
     NgChartsModule,
-    FormlyModule.forChild()
+    FormlyModule.forChild(),
+    BsDropdownModule
   ],
   declarations: [KpiAggregatorWidgetComponent, KpiAggregatorWidgetConfigComponent],
   entryComponents: [KpiAggregatorWidgetComponent],
