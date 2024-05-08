@@ -42,43 +42,54 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
           type: 'input',
           props: {
             label: 'Query',
-            placeholder: '(kpi_Group.groupId eq [kpi_GroupRefernce]) and has(c8y_IsDevice)',
             required: true,
             description:
-              'Placeholders can be used to set query parameters based on the dashboards asset, e.g. <code>[kpi_fragment]</code>.'
+              'Placeholders (<code>[foo]</code>) can be used to set query parameters based on the current dashboards context.<br>For example: <code>(kpi_Group.groupId eq [kpi_GroupId]).'
           }
         },
         {
-          key: 'pageSize',
-          type: 'number',
-          props: {
-            label: 'Page Size',
-            min: 1,
-            max: 2000,
-            step: 250,
-            placeholder: '500'
-          }
-        },
-        {
-          key: 'pageLimit',
-          type: 'number',
-          props: {
-            label: 'Page Limit',
-            min: 1,
-            step: 1,
-            placeholder: '3'
-          }
-        },
-        {
-          key: 'parallelRequests',
-          type: 'number',
-          props: {
-            label: 'Number of parallel requests',
-            min: 1,
-            max: 10,
-            step: 1,
-            placeholder: '1'
-          }
+          fieldGroupClassName: 'row',
+          fieldGroup: [
+            {
+              key: 'pageSize',
+              type: 'number',
+              className: 'col-md-4',
+              props: {
+                label: 'Page Size',
+                required: true,
+                min: 1,
+                max: 2000,
+                step: 250,
+                description:
+                  'The <b>number of items</b> you want to load per request.<br>The lower the number, the quicker the response.'
+              }
+            },
+            {
+              key: 'pageLimit',
+              type: 'number',
+              className: 'col-md-4',
+              props: {
+                label: 'Page Limit',
+                min: 0,
+                step: 1,
+                description:
+                  'The <b>maximal number of pages</b> you want to load initially.<br>Set it to <code>0</code>, to use the maximal supported number of pages.'
+              }
+            },
+            {
+              key: 'parallelRequests',
+              type: 'number',
+              className: 'col-md-4',
+              props: {
+                label: 'Number of parallel requests',
+                min: 1,
+                max: 10,
+                step: 1,
+                description:
+                  'If you want to load pages in parallel, instead of one after another.<br>This can reduce the time for the overall process to finish, but might also stress the tenant.'
+              }
+            }
+          ]
         }
       ]
     },
@@ -90,15 +101,21 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
           type: 'select',
           props: {
             label: 'Display Mode',
+            required: true,
             options: KPI_AGGREGAOR_WIDGET__DISPLAY_OPTIONS
           }
+        },
+        {
+          template: '<hr />'
         },
         {
           key: 'kpiFragment',
           type: 'input',
           props: {
             label: 'KPI Fragment',
-            placeholder: 'c8y_ActiveAlarmsStatus.major'
+            required: true,
+            description:
+              'The inventory managed object fragment, that serves as the basis of the aggregation e.g. <code>c8y_ActiveAlarmsStatus.major</code>'
           },
           expressions: {
             hide: 'model.display == "list"'
@@ -108,7 +125,7 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
           key: 'groupBy',
           type: 'input',
           props: {
-            label: 'Group By',
+            label: 'Group by',
             placeholder: 'c8y_Hardware.model'
           },
           expressions: {
@@ -120,7 +137,9 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
           type: 'input',
           props: {
             label: 'Label',
-            placeholder: 'type'
+            placeholder: 'type',
+            description:
+              'The fragment of the inventory managed object that should be displayed in the output; e.g. <code>type</code>.'
           },
           expressions: {
             hide: 'model.display != "aggregate" && model.display != "pieAggregate"'
@@ -130,7 +149,7 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
           key: 'sort',
           type: 'select',
           props: {
-            label: 'Sort By',
+            label: 'Sort',
             options: KPI_AGGREGAOR_WIDGET__SORT_OPTIONS
           },
           expressions: {
@@ -141,7 +160,7 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
           key: 'order',
           type: 'select',
           props: {
-            label: 'Order By',
+            label: 'Order',
             options: KPI_AGGREGAOR_WIDGET_ORDER_OPTIONS
           },
           expressions: {
@@ -176,8 +195,9 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
               className: 'col-md-9',
               props: {
                 label: 'Background Color',
-                placeholder: '#00584d',
-                type: 'color'
+                type: 'color',
+                description:
+                  'Color as Hex, e.g. <code>#FF0000</code>.<br>By default the primary brand theme color will be used.'
               },
               expressions: {
                 hide: 'model.display == "pieCount" || model.display == "pieAggregate"'
@@ -192,10 +212,11 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
                 min: 0,
                 max: 100,
                 step: 10,
-                placeholder: '30',
                 addonRight: {
                   text: '%'
-                }
+                },
+                description:
+                  'The opacity of the item background color in percent. <code>10</code>% means the item item chart background will be mostly tanslucent.'
               },
               expressions: {
                 hide: 'model.display == "pieCount" || model.display == "pieAggregate"'
@@ -209,10 +230,13 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
       // 4. misc
       fieldGroup: [
         {
+          template: '<hr />'
+        },
+        {
           key: 'percent',
           type: 'checkbox',
           props: {
-            label: 'Percent'
+            label: 'Show Percent'
           },
           expressions: {
             hide: 'model.display == "pieCount" || model.display == "pieAggregate" || model.display == "list"'
@@ -220,16 +244,18 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
         },
         {
           key: 'showMeta',
-          type: 'switch',
+          type: 'checkbox',
           props: {
-            label: 'Show Meta Info'
+            label: 'Show Meta Info',
+            description: 'Dispalys query duration and paging information.'
           }
         },
         {
           key: 'runOnLoad',
           type: 'checkbox',
           props: {
-            label: 'Run on Load'
+            label: 'Run on Load',
+            description: 'If active, starts to query on page load. Otherwise triggered manually.'
           }
         }
       ]

@@ -28,11 +28,13 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
   loading = false;
   asset: IManagedObject;
+  private rawAssets: IManagedObject[];
   assetGroups: AssetGroup[];
   max = 0;
   total = 0;
   results = 0;
   paging: Paging<IManagedObject>;
+  pageLimit = 0;
 
   // pie chart
   pieChartData?: ChartData<'pie', number[], string | string[]>;
@@ -78,6 +80,37 @@ export class KpiAggregatorWidgetComponent implements OnInit {
           ? await this.loadDataParallel(limit, assets)
           : await this.loadDataSequentially(limit, assets);
 
+    this.pageLimit = limit;
+    this.handleRawAssets(assets);
+
+    this.timestampEnd = new Date();
+    this.duration = this.calcQueryDuration();
+    this.loading = false;
+  }
+
+  async loadNextBatch(): Promise<void> {
+    if (this.paging.totalPages <= this.paging.currentPage) return;
+
+    const limit = this.getNextBatchLimit();
+
+    this.loading = true;
+    this.timestampStart = new Date();
+
+    const assets =
+      this.config.parallelRequests > 1
+        ? await this.loadDataParallel(limit, this.rawAssets)
+        : await this.loadDataSequentially(limit, this.rawAssets);
+
+    this.pageLimit = limit;
+    this.handleRawAssets(assets);
+
+    this.timestampEnd = new Date();
+    this.duration = this.calcQueryDuration();
+    this.loading = false;
+  }
+
+  private handleRawAssets(assets: IManagedObject[]) {
+    this.rawAssets = assets;
     this.assetGroups = this.digestAssets(assets);
 
     // data
@@ -91,16 +124,12 @@ export class KpiAggregatorWidgetComponent implements OnInit {
       default:
         this.setMinMax(this.assetGroups);
     }
-
-    this.timestampEnd = new Date();
-    this.duration = this.calcQueryDuration();
-    this.loading = false;
   }
 
   private async loadDataSequentially(limit: number, assets: IManagedObject[]): Promise<IManagedObject[]> {
     if (limit < 2) return assets;
 
-    for (let page = 2; page <= limit; page++) {
+    for (let page = this.paging.currentPage + 1; page <= limit; page++) {
       assets = [...assets, ...(await this.fetchAssets(page)).data];
       this.paging.currentPage = page;
       this.results = assets.length;
@@ -114,7 +143,7 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
     let requests: Promise<IManagedObject[]>[] = [];
 
-    for (let page = 2; page <= limit; page++) {
+    for (let page = this.paging.currentPage + 1; page <= limit; page++) {
       requests.push(this.fetchAssets(page).then((r) => r.data));
 
       if ((page - 1) % this.config.parallelRequests === 0 || page === limit) {
@@ -360,5 +389,14 @@ export class KpiAggregatorWidgetComponent implements OnInit {
         }
       ]
     };
+  }
+
+  private getNextBatchLimit(): number {
+    if (this.paging.totalPages <= this.paging.currentPage) throw 'No further pages available.';
+    if (this.config.parallelRequests === 1) return this.paging.currentPage + 1;
+
+    const limit = this.paging.currentPage + this.config.parallelRequests;
+
+    return limit < this.paging.totalPages ? limit : this.paging.totalPages;
   }
 }
