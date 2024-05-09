@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { IManagedObject, InventoryService, IResultList, Paging } from '@c8y/client';
-import { ChartConfiguration, ChartData } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartTypeRegistry, TooltipItem } from 'chart.js';
 import { cloneDeep, flatMap, has, sortBy } from 'lodash';
 import {
   KpiAggregatorWidgetConfig,
@@ -28,13 +28,15 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
   loading = false;
   asset: IManagedObject;
-  private rawAssets: IManagedObject[];
   assetGroups: AssetGroup[];
   max = 0;
   total = 0;
   results = 0;
   paging: Paging<IManagedObject>;
   pageLimit = 0;
+  aggreagtedValue = 0;
+
+  private rawAssets: IManagedObject[];
 
   // pie chart
   pieChartData?: ChartData<'pie', number[], string | string[]>;
@@ -43,6 +45,11 @@ export class KpiAggregatorWidgetComponent implements OnInit {
       legend: {
         display: true,
         position: undefined
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => this.generatePieChartLabel(context)
+        }
       }
     }
   };
@@ -121,9 +128,9 @@ export class KpiAggregatorWidgetComponent implements OnInit {
       case KpiAggregatorWidgetDisplay.pieCount:
         this.pieChartData = this.convertDataForPieChart(this.assetGroups);
         break;
-      default:
-        this.setMinMax(this.assetGroups);
     }
+
+    this.setMinMax(this.assetGroups);
   }
 
   private async loadDataSequentially(limit: number, assets: IManagedObject[]): Promise<IManagedObject[]> {
@@ -324,13 +331,17 @@ export class KpiAggregatorWidgetComponent implements OnInit {
 
   private setMinMax(groups: AssetGroup[]) {
     let max = 0;
+    let aggreagtedValue = 0;
 
     groups.forEach((group) => {
+      aggreagtedValue += group.value as number;
+
       if (group.value > max) {
         max = group.value as number;
       }
     });
 
+    this.aggreagtedValue = aggreagtedValue;
     this.max = max;
   }
 
@@ -398,5 +409,11 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     const limit = this.paging.currentPage + this.config.parallelRequests;
 
     return limit < this.paging.totalPages ? limit : this.paging.totalPages;
+  }
+
+  private generatePieChartLabel(context: TooltipItem<keyof ChartTypeRegistry>): string {
+    const percent = Math.round((context.parsed / this.aggreagtedValue) * 1000) / 10;
+
+    return this.config.percent ? `${percent}% (${context.formattedValue})` : context.formattedValue;
   }
 }
