@@ -239,7 +239,7 @@ export class KpiAggregatorWidgetConfigComponent implements OnInit {
             label: 'Show Percent'
           },
           expressions: {
-            hide: 'model.display == "pieCount" || model.display == "pieAggregate" || model.display == "list"'
+            hide: 'model.display == "list"'
           }
         },
         {
