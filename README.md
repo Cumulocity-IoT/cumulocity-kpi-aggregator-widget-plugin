@@ -6,20 +6,53 @@
 
 Currently, five display modes are available. Functional, both aggregation and counting views share identical configurations and provide two visualisation flavours: 📊 bar and 🍰 pie chart.
 
-![](./docs/screenshot-aggregation.jpg)
+![](./docs/screenshot-aggregation.jpg)  
 <small>Display aggregated values: bar chart (left) and pie chart (right).</small>
 
-![](./docs/screenshot-counting.jpg)
-<small>Display counted values: bar chart (left) and pie chart (right).</small>
+![](./docs/screenshot-counting.jpg)  
+<small>Display counted values: bar chart with percent values (left) and pie chart (right).</small>
 
-![](./docs/screenshot-table.jpg)
+![](./docs/screenshot-table.jpg)  
 <small>Display mode: table</small>
+
+### Meta Information
+
+![](./docs/screenshot-meta-info.png)  
+<small>Highlighted request meta information: Paging (top) and duration of query (bottom).</small>
+
+![](./docs/screenshot-meta-pageinfo.jpg)  
+<small>Paging detail information in tooltip</small>
+
+### Additional Actions
+
+![](./docs/screenshot-drop-down-menu.jpg)  
+<small>The drop down menu provides access to actions, such as refreshing the data.</small>
 
 ### Widget Config
 
 ![](./docs/screenshot-config.jpg)
 
-#### Useful query samples
+#### Useful config samples
+
+- Count all devices by type
+  - Query: `has(c8y_IsDevice)`
+  - Display Mode: `Bar Chart: Count Entries`
+  - KPI Fragment: `type`
+  - Group by: `type`
+  - Sort: `by Value`
+  - Order: `Descending`
+  - `Show Meta Info` and `Run on Load` checked
+- Aggregate critical alarms by device type
+  - Query: `has(c8y_IsDevice)`
+  - Display Mode: `Pie Chart: Aggregate Entries`
+  - KPI Fragment: `c8y_ActiveAlarmsStatus.major`
+  - Group by: `type`
+  - Label: `type`
+  - Sort: `by Value`
+  - Order: `Descending`
+  - `Show Percent` and `Run on Load` checked
+
+---
 
 ## Installation and update
 
