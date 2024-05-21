@@ -1,36 +1,50 @@
 # Cumulocity IoT UI KPI Aggregator Widget Plugin
 
+The KPI aggregator widget allows you to quickly configure and visualize queries againt the inventory API, and count or aggregate single result fragments, on client side (in the browser).
+
 ## Features
+
+The widget can be [configured](#widget-config) to query inventory managed objects, based on [the filter query langugage](https://cumulocity.com/api/core/10.18.0/#tag/Query-language), enhanced with [context sensitive query parameters](#context-sensitive-queries).
+
+For visualization, [three display modes](#display-modes) are avilable: a "bar chart" – or rather a listing with the percentual value represented as background-color –, a pie chart and a table – listing all queried assets.
+
+To be able to control the potential pandoras box of queries, options to limit the number of results per request, the number of parallel requests and requests per page are configurable, as well as an option to only run the query on demand.
 
 ### Display Modes
 
 Currently, five display modes are available. Functional, both aggregation and counting views share identical configurations and provide two visualisation flavours: 📊 bar and 🍰 pie chart.
 
-![](./docs/screenshot-aggregation.jpg)  
+![A screenshot showing both "aggreation" display options, pie and bar chart, of the widget side by side, demoing the aggreation critical alarms by device type.](./docs/screenshot-aggregation.jpg)  
 <small>Display aggregated values: bar chart (left) and pie chart (right).</small>
 
-![](./docs/screenshot-counting.jpg)  
+![A screenshot of the widget presenting both the pie and bar chart display "counting" variants, exemplary for device types.](./docs/screenshot-counting.jpg)  
 <small>Display counted values: bar chart with percent values (left) and pie chart (right).</small>
 
-![](./docs/screenshot-table.jpg)  
-<small>Display mode: table</small>
+![Another screenshot, taken from the "table" display variant of the widget, rendering each device, with additional information, as a separate row within a table.](./docs/screenshot-table.jpg)  
+<small>Display mode table: each queried device is listed.</small>
 
 ### Meta Information
 
-![](./docs/screenshot-meta-info.png)  
+![Screenshot of the widget highlighting the result paging information – 28 results, page 1 of 1 –, at the top, and query duration – 111 milliseconds –, at the bottom.](./docs/screenshot-meta-info.png)  
 <small>Highlighted request meta information: Paging (top) and duration of query (bottom).</small>
 
-![](./docs/screenshot-meta-pageinfo.jpg)  
+![A screesnhot of the additional paging information – current page, configured page limit and total avilable pages –, in a tooltip.](./docs/screenshot-meta-pageinfo.jpg)  
 <small>Paging detail information in tooltip</small>
 
 ### Additional Actions
 
-![](./docs/screenshot-drop-down-menu.jpg)  
+![A Screenshot of the actions menu opened, exposing buttons to triggers to load the next batch (set of pages) and refresh the view.](./docs/screenshot-drop-down-menu.jpg)  
 <small>The drop down menu provides access to actions, such as refreshing the data.</small>
 
 ### Widget Config
 
-![](./docs/screenshot-config.jpg)
+![Screenshot of the widget config, presenting options to adjust the query, its pagination and different display details.](./docs/screenshot-config.jpg)
+
+#### Context sensitive queries
+
+It is possible to user "context sensitive" parameters within your query. This means that parts of your query can be replaced by values from the managed object of your dashboard context, for example: if you would want to display a list of devices from the same owner – that hosts the dashboard – you can use the query `owner eq "[owner]"`. `[owner]` will then be replaced by the devices types, so that the actual request would read `owner eq "your.email@host.net"`.
+
+Ht econtext sensitive parameter can also address fragments of objects, such as `[c8y_Hardware.model]` or `[c8y_Availability.status]`. Please note that it is currently not possible to traverse arrays this way.
 
 #### Useful config samples
 
@@ -56,19 +70,21 @@ Currently, five display modes are available. Functional, both aggregation and co
 
 ## Installation and update
 
+_TBD: widget installation and update. link?_
+
 ---
 
 ## Local Development
 
 ### Recommended version
 
-- node v 14.x
-- npm v 6.x
+- node v 16.x
+- npm v 9.x
 
 ### Plugin versions
 
 - Angular v 14.x
-- WebSDK v 1017.0.x
+- WebSDK v 1018.0.x
 
 ### How to start
 
