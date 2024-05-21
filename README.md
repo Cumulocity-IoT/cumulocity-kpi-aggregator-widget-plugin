@@ -70,11 +70,14 @@ Ht econtext sensitive parameter can also address fragments of objects, such as `
 
 ---
 
+<!--
 ## Installation and update
 
-_TBD: widget installation and update. link?_
+_TBD_
 
 ---
+
+-->
 
 ## Local Development
 
