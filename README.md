@@ -1,5 +1,7 @@
 # Cumulocity IoT UI KPI Aggregator Widget Plugin
 
+![Screencapture of the widget, demoing a change in config and the loading of a second batch of pages.](./docs/preview.gif)
+
 The KPI aggregator widget allows you to quickly configure and visualize queries againt the inventory API, and count or aggregate single result fragments, on client side (in the browser).
 
 ## Features
