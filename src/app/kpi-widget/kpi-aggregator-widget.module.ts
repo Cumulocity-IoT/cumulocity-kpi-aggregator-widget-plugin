@@ -22,7 +22,6 @@ import { KpiAggregatorWidgetComponent } from './components/kpi-aggregator-widget
     BsDropdownModule
   ],
   declarations: [KpiAggregatorWidgetComponent, KpiAggregatorWidgetConfigComponent],
-  entryComponents: [KpiAggregatorWidgetComponent],
   providers: [
     hookComponent({
       id: 'kpi-aggregator.widget',

@@ -3,16 +3,18 @@ import { LayoutPosition } from 'chart.js';
 // sort options
 export const KpiAggregatorWidgetSort = {
   label: 'label',
-  value: 'value'
+  value: 'value',
 };
-export type KpiAggregatorWidgetSort = (typeof KpiAggregatorWidgetSort)[keyof typeof KpiAggregatorWidgetSort];
+export type KpiAggregatorWidgetSort =
+  (typeof KpiAggregatorWidgetSort)[keyof typeof KpiAggregatorWidgetSort];
 
 // order options
 export const KpiAggregatorWidgetOrder = {
   asc: 'asc',
-  desc: 'desc'
+  desc: 'desc',
 };
-export type KpiAggregatorWidgetOrder = (typeof KpiAggregatorWidgetOrder)[keyof typeof KpiAggregatorWidgetOrder];
+export type KpiAggregatorWidgetOrder =
+  (typeof KpiAggregatorWidgetOrder)[keyof typeof KpiAggregatorWidgetOrder];
 
 // display options
 export const KpiAggregatorWidgetDisplay = {
@@ -20,9 +22,10 @@ export const KpiAggregatorWidgetDisplay = {
   count: 'count',
   list: 'list',
   pieAggregate: 'pieAggregate',
-  pieCount: 'pieCount'
+  pieCount: 'pieCount',
 };
-export type KpiAggregatorWidgetDisplay = (typeof KpiAggregatorWidgetDisplay)[keyof typeof KpiAggregatorWidgetDisplay];
+export type KpiAggregatorWidgetDisplay =
+  (typeof KpiAggregatorWidgetDisplay)[keyof typeof KpiAggregatorWidgetDisplay];
 
 // widget config
 export interface KpiAggregatorWidgetConfig {
@@ -49,12 +52,12 @@ export const KpiAggregatorWidgetChartLegendPosition = {
   top: 'top',
   right: 'right',
   bottom: 'bottom',
-  left: 'left'
+  left: 'left',
 };
 export type KpiAggregatorWidgetChartLegendPosition =
   (typeof KpiAggregatorWidgetChartLegendPosition)[keyof typeof KpiAggregatorWidgetChartLegendPosition];
 
-  // form elements
+// form elements
 export type KpiAggregatorWidgetOptions = {
   label: string;
   value: string | number | boolean;
