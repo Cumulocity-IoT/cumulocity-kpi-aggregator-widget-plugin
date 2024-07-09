@@ -18,6 +18,8 @@
     </ng-template>
   </span>
 
+  <span *ngIf="!loading && !assetGroups" class="text-muted">-</span>
+
   <div dropdown class="dropdown">
     <button dropdownToggle type="button" title="dropdown-toggle" class="dropdown-toggle c8y-dropdown">
       <i [c8yIcon]="'ellipsis-v'"></i>
@@ -156,10 +158,8 @@
 
 <!-- empty -->
 <ng-template #noData>
-  <ng-container *ngIf="assetGroups">
-    <div class="p-16 m-b-16">
-      <h2>Empty AssetGroup Result</h2>
-      <pre>{{ config | json }}</pre>
-    </div>
-  </ng-container>
+  <div class="p-16">
+    <h2 class="m-b-16">Empty AssetGroup Result</h2>
+    <pre>{{ config | json }}</pre>
+  </div>
 </ng-template>

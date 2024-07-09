@@ -99,16 +99,23 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     this.timestampStart = new Date();
 
     // first page and paging
-    let { limit, assets } = await this.loadPageOne();
+    const response = await this.loadPageOne();
+    let assets: IManagedObject[];
+
+    if (!response) {
+      this.loading = false;
+      return;
+    }
 
     // further pages
-    if (limit > 1)
+    if (response.limit > 1)
       assets =
         this.config.parallelRequests > 1
-          ? await this.loadDataParallel(limit, assets)
-          : await this.loadDataSequentially(limit, assets);
+          ? await this.loadDataParallel(response.limit, response.assets)
+          : await this.loadDataSequentially(response.limit, response.assets);
+    else assets = response.assets;
 
-    this.pageLimit = limit;
+    this.pageLimit = response.limit;
     this.handleRawAssets(assets);
 
     this.timestampEnd = new Date();
@@ -266,7 +273,7 @@ export class KpiAggregatorWidgetComponent implements OnInit {
     let value: number | string;
     let total = 0;
 
-    if (!assets.length) {
+    if (!assets || !assets.length) {
       console.error('no assets provided');
       return [];
     }
