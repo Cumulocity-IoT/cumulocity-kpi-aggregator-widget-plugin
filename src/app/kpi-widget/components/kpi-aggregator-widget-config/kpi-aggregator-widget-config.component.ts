@@ -8,15 +8,14 @@ import {
   KPI_AGGREGAOR_WIDGET__CHART_LEGEND_POSITION_OPTIONS,
   KPI_AGGREGAOR_WIDGET__DEFAULT_CONFIG,
   KPI_AGGREGAOR_WIDGET__DISPLAY_OPTIONS,
-  KPI_AGGREGAOR_WIDGET__SORT_OPTIONS
+  KPI_AGGREGAOR_WIDGET__SORT_OPTIONS,
 } from '../../models/kpi-aggregator-widget.const';
-import {
-  KpiAggregatorWidgetConfig
-} from '../../models/kpi-aggregator-widget.model';
+import { KpiAggregatorWidgetConfig } from '../../models/kpi-aggregator-widget.model';
 
 @Component({
   selector: 'c8y-kpi-aggregator-widget-config',
-  templateUrl: './kpi-aggregator-widget-config.component.html',
+  template:
+    '<formly-form [form]="form" [fields]="fields" [model]="config"></formly-form>',
   styleUrl: 'kpi-aggregator-widget-config.component.less',
 })
 export class KpiAggregatorWidgetConfigComponent implements OnInit {
